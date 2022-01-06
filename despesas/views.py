@@ -8,6 +8,7 @@ from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
 import datetime
+from .filters import ExpenseFilter
 
 @login_required(login_url='/autenticacao/login')
 def index(request):
@@ -16,9 +17,12 @@ def index(request):
     paginator = Paginator(expenses, 5)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number) 
+    myFilter = ExpenseFilter(request.GET, queryset=expenses)
+    expenses = myFilter.qs
     context = {
         'expenses': expenses,
         'page_obj': page_obj,
+        'myFilter': myFilter,
     }
     return render(request, 'expenses/index.html', context)
 
