@@ -8,7 +8,7 @@
 
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'expenses' %}">Despesas</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'despesas' %}">Despesas</a></li>
       <li class="breadcrumb-item active" aria-current="page">Nova Despesa</li>
     </ol>
   </nav>
@@ -31,6 +31,14 @@
         <select class='form-control' name="category">
           {% for category in categories %}
           <option name='category' value="{{category.name}}">{{category.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="">Estilo Conta</label>
+        <select class='form-control' name="category">
+          {% for conta in contas %}
+          <option name='category' value="{{category.name}}">{{conta.tipoConta}}</option>
           {% endfor %}
         </select>
       </div>

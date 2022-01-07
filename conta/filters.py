@@ -1,7 +1,7 @@
 from django_filters import DateFilter
 import django_filters
 
-from .models import Expense
+from .models import Expense, conta
 
 class ExpenseFilter(django_filters.FilterSet):
     dataInicial = DateFilter(field_name='date', lookup_expr='gte')
@@ -10,3 +10,4 @@ class ExpenseFilter(django_filters.FilterSet):
         model = Expense
         fields = '__all__'
         exclude = ['amount', 'owner', 'description', 'date']
+
