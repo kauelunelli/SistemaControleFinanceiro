@@ -1,6 +1,7 @@
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Category, Expense
+from .models import Category, Expense, conta, TipoConta, tipoReceita
 # Create your views here.
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -10,8 +11,54 @@ from django.http import JsonResponse
 import datetime
 from .filters import ExpenseFilter
 
+
 @login_required(login_url='/autenticacao/login')
-def index(request):
+def contas(request):
+    contas = conta.objects.all()
+    paginator = Paginator(contas, 5)
+    page_number = request.GET.get('page')
+    page_obj = Paginator.get_page(paginator, page_number) 
+    context = {
+        'contas': contas,
+        'page_obj': page_obj,
+    }
+    return render(request, 'conta/contas.html', context)
+
+def add_conta(request):
+    contas = conta.objects.all()
+    TipoContas = TipoConta.objects.all()
+    context = {
+        'values': request.POST,
+        'contas': contas,
+        'TipoContas' : TipoContas,
+    }
+    if request.method == 'GET':
+        return render(request, 'conta/add-conta.html', context)
+
+    if request.method == 'POST':
+        tipoConta = request.POST['tipoconta']
+        saldo = request.POST['saldo']
+        instituicao = request.POST['instituicao']
+
+        if not tipoConta:
+            messages.error(request, 'Precisa de um estilo de Conta')
+            return render(request, 'conta/add-conta.html', context)
+
+        if not saldo:
+            messages.error(request, 'saldo é necessario!')
+            return render(request, 'conta/add-conta.html', context)
+        
+        if not instituicao:
+            messages.error(request, 'Precisa de uma Instituição!')
+        conta.objects.create(tipoConta=tipoConta, saldo=saldo, instituicao=instituicao)
+        messages.success(request, 'Conta feita com Sucesso!')
+
+        return redirect('add-conta')
+
+
+
+@login_required(login_url='/autenticacao/login')
+def despesas(request):
     categories = Category.objects.all()
     expenses = Expense.objects.filter(owner=request.user)
     paginator = Paginator(expenses, 5)
@@ -24,14 +71,16 @@ def index(request):
         'page_obj': page_obj,
         'myFilter': myFilter,
     }
-    return render(request, 'expenses/index.html', context)
+    return render(request, 'expenses/despesas.html', context)
 
 
 def add_expense(request):
+    expense = Expense.objects.all()
     categories = Category.objects.all()
     context = {
         'categories': categories,
-        'values': request.POST
+        'values': request.POST,
+        'expense': expense
     }
     if request.method == 'GET':
         return render(request, 'expenses/add_expense.html', context)
@@ -89,7 +138,7 @@ def expense_edit(request, id):
         expense.description = description
 
         expense.save()
-        messages.success(request, 'Expense updated  successfully')
+        messages.success(request, 'Despesa enviada com Sucesso!')
 
         return redirect('expenses')
 
@@ -97,7 +146,7 @@ def expense_edit(request, id):
 def delete_expense(request, id):
     expense = Expense.objects.get(pk=id)
     expense.delete()
-    messages.success(request, 'Expense removed')
+    messages.success(request, 'Despesa Excluída')
     return redirect('expenses')
 
 
