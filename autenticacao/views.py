@@ -15,7 +15,7 @@ from .form import CreateUserForm
 
 def registerPage(request):
 	if request.user.is_authenticated:
-		return redirect('expenses')
+		return redirect('despesas')
 	else:
 		form = CreateUserForm()
 		if request.method == 'POST':
@@ -34,7 +34,7 @@ def registerPage(request):
 
 def loginPage(request):
 	if request.user.is_authenticated:
-		return redirect('expenses')
+		return redirect('despesas')
 	else:
 		if request.method == 'POST':
 			username = request.POST.get('username')
@@ -44,7 +44,7 @@ def loginPage(request):
 
 			if user is not None:
 				login(request, user)
-				return redirect('expenses')
+				return redirect('despesas')
 			else:
 				messages.info(request, 'Usuário ou Senha Incorreto')
 

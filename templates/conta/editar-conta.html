@@ -6,7 +6,7 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="{% url 'despesas'%}">Expenses</a>
+            <a href="{% url 'contas' %}">Expenses</a>
           </li>
           <li class="breadcrumb-item active" aria-current="page">
             Edit Expense
@@ -17,7 +17,7 @@
 
     <div class="col-md-2">
       <a
-        href="{% url 'expense-delete' expense.id %}"
+        href=""
         class="btn btn-danger btn-sm"
         >Delete</a
       >
@@ -26,47 +26,41 @@
 
   <div class="card">
     <div class="card-body">
-      <form action="{% url 'expense-edit' expense.id %}" method="post">
+      <form action="{% url 'edita-conta' contas.id %}" method="post">
         {% include 'partials/_messages.html'%} {% csrf_token %}
         <div class="form-group">
-          <label for="">Amount</label>
+          <label for="">Nome</label>
           <input
             type="text"
             class="form-control form-control-sm"
-            name="amount"
-            value="{{values.amount}}"
+            name="nome"
+            value="{{values.nome}}"
           />
         </div>
         <div class="form-group">
-          <label for="">Description</label>
+          <label for="">Saldo</label>
           <input
-            type="text"
+            type="number"
             class="form-control form-control-sm"
-            name="description"
-            value="{{values.description}}"
+            name="saldo"
+            value="{{values.saldo}}"
           />
         </div>
         <div class="form-group">
-          <label for="">Category</label>
-          <select class="form-control" name="category">
-            <option selected name="category" value="{{values.category}}"
-              >{{values.category}}</option
-            >
-            {% for category in categories%}
-            <option name="category" value="{{category.name}}"
-              >{{category.name}}</option
-            >
-
+          <label for="">Conta</label>
+          <select class='form-control' name="tipoconta">
+            {% for TipoConta in TipoContas %}
+            <option name='tipoconta' value="{{TipoConta.tipoConta}}">{{TipoConta.tipoConta}}</option>
             {% endfor %}
           </select>
         </div>
         <div class="form-group">
-          <label for="">Date of Expense</label>
+          <label for="">Instituição Financeira</label>
           <input
-            type="date"
-            value="{{values.date |date:'Y-m-d' }}"
+            type="text"
+            value="{{values.instituicao}}"
             class="form-control form-control-sm"
-            name="expense_date"
+            name="instituicao"
           />
         </div>
 

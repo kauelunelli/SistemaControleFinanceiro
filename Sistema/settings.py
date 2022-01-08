@@ -42,8 +42,7 @@ INSTALLED_APPS = [
     'django_filters',
     'widget_tweaks',
     'conta',
-    'mathfilters'
-
+    
 ]
 
 MIDDLEWARE = [

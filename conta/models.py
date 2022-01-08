@@ -41,6 +41,8 @@ class TipoConta(models.Model):
         return self.tipoConta
 
 class conta(models.Model):
+    nome = models.CharField(max_length=255)
+    dono = models.ForeignKey(to=User, on_delete=models.CASCADE)
     saldo = models.FloatField()
     instituicao = models.CharField(max_length=255)
     tipoConta = models.CharField(max_length=255)
