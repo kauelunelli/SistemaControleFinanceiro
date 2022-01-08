@@ -42,6 +42,7 @@
   <table class="table table-stripped table-hover">
     <thead>
       <tr>
+        <th>Nome da Conta</th>
         <th>Valor</th>
         <th>Conta</th>
         <th>Instituição Financeira</th>
@@ -53,14 +54,14 @@
     <tbody>
       {% for conta in contas %}
       <tr>
-        <td>{{conta.saldo|add:3.10}}</td>
+        <td>{{conta.nome}}</td>
+        <td>{{conta.saldo}}</td>
         <td>{{conta.tipoConta}}</td>
         <td>{{conta.instituicao}}</td>
-        <td>{{expense.date}}</td>
 
         <td>
           <a
-            href=""
+            href="{% url 'edita-conta' conta.id %}"
             class="btn btn-secondary btn-sm"
             >Edit</a
           >

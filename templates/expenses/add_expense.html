@@ -12,7 +12,10 @@
       <li class="breadcrumb-item active" aria-current="page">Nova Despesa</li>
     </ol>
   </nav>
-
+  
+  <div class="col-md-2">
+    <a href="{% url 'add-categoria'%}" class="btn btn-primary">Add Categoria</a>
+  </div>
   <div class="card">
     <div class="card-body">
     <form action="{% url 'add-expenses' %}" method="post">
@@ -35,10 +38,10 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="">Estilo Conta</label>
-        <select class='form-control' name="category">
+        <label for="">Conta</label>
+        <select class='form-control' name="nome">
           {% for conta in contas %}
-          <option name='category' value="{{category.name}}">{{conta.tipoConta}}</option>
+          <option name='nome' value="{{conta.nome}}">{{conta.nome}}</option>
           {% endfor %}
         </select>
       </div>
