@@ -22,25 +22,10 @@ class Receita(models.Model):
         ordering: ['-date']
 
 
-class tipoReceita(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
 
 
 
-class TipoConta(models.Model):
-    tipoConta = models.CharField(max_length=255)
-    
-    class Meta:
-        verbose_name_plural = 'tipoContas'
-
-
-    def __str__(self):
-        return self.tipoConta
-
-class conta(models.Model):
+class Conta(models.Model):
     nome = models.CharField(max_length=255)
     dono = models.ForeignKey(to=User, on_delete=models.CASCADE)
     saldo = models.FloatField()
@@ -52,25 +37,28 @@ class conta(models.Model):
 
 
 
-class Expense(models.Model):
-    amount = models.FloatField()
-    date = models.DateField(default=now)
-    description = models.TextField()
-    owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    category = models.CharField(max_length=266)
+class Despesa(models.Model):
+    valor = models.FloatField()
+    dataPagamento = models.DateField(default=now)
+    dataPagamentoEsperado = models.DateField(default=now)
+    descricao = models.TextField()
+    dono = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    conta = models.CharField(max_length=266)
+    tipoDespesa = models.CharField(max_length=266)
+    
 
     def __str__(self):
-        return self.category
+        return self.conta
 
     class Meta:
         ordering: ['-date']
 
 
-class Category(models.Model):
+class TipoDespesa(models.Model):
     name = models.CharField(max_length=255)
 
     class Meta:
-        verbose_name_plural = 'Categories'
+        verbose_name_plural = 'TipoDespesas'
 
     def __str__(self):
         return self.name

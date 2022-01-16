@@ -11,47 +11,24 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="">Despesas</a>
+            <a href="">Receitas</a>
           </li>
           <li class="breadcrumb-item active" aria-current="page">
-            Minhas Despesas
+            Minhas Receitas
           </li>
         </ol>
       </nav>
     </div>
 
     <div class="col-md-2">
-      <a href="{% url 'add-expenses'%}" class="btn btn-primary">Add despesa</a>
+      <a href="{% url 'add-receita'%}" class="btn btn-primary">Add receita</a>
     </div>
   </div>
 
   <div class="container">
     {% include 'partials/_messages.html' %}
 
-    <div class="row">
-      <div class="col">
-        <div class="card card-body">
-    
-          <form method="get" class="form-inline">
-            <div class="form-group d-block p-1 filters mx-1">
-              {% render_field myFilter.form.dataInicial class="form-control" type='date' %}
-            </div>
-            <div class="form-group d-block p-1 filters mx-1">
-              {% render_field myFilter.form.dataFinal class="form-control" type='date' %}
-            </div>
-            <div class="form-group d-block p-1 filters mx-1">
-              {% render_field myFilter.form.tipoDespesa class="form-control" placeholder='Categoria' %}
-            </div>
-            <button class="btn btn-primary ml-2 btn-custom" type="submit" onsubmit="cleanMask()">Pesquisar</button>
-            {% if myFilter.form.category.value or myFilter.form.dataInicial.value or myFilter.form.dataFinal.value %}
-              <a class="btn btn-secondary ml-2 btn-custom" href="{% url 'despesas' %}">Limpar</a>
-            {% endif %}
-          </form>
-    
-        </div>
-      </div>
-    </div>
-  {% if despesas.count %}
+  {% if receitas.count %}
 <div class="app-table">
 
   <table class="table table-stripped table-hover">
@@ -67,18 +44,18 @@
     </thead>
 
     <tbody>
-      {% for despesa in despesas %}
+      {% for receita in receitas %}
       <tr>
-        <td>{{despesa.valor}}</td>
-        <td>{{despesa.conta}}</td>
-        <td>{{despesa.tipoDespesa}}</td>
-        <td>{{despesa.dataPagamento}}</td>
-        <td>{{despesa.dataPagamentoEsperado}}</td>
-        <td>{{despesa.descricao}}</td>
+        <td>{{receita.valor}}</td>
+        <td>{{receita.conta}}</td>
+        <td>{{receita.tipoReceita}}</td>
+        <td>{{receita.dataRecebimento}}</td>
+        <td>{{receita.dataRecebimentoEsperado}}</td>
+        <td>{{receita.descricao}}</td>
 
         <td>
           <a
-            href="{% url 'expense-edit' despesa.id  %}"
+            href="{% url 'edita-receita' receita.id %}"
             class="btn btn-secondary btn-sm"
             >Edit</a
           >
