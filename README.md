@@ -1,4 +1,4 @@
-# DesafioPubFute
+# DesafioPubFuture
 
 ## Instalação
 
