@@ -6,10 +6,10 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="{% url 'contas' %}">Expenses</a>
+            <a href="{% url 'contas' %}">Contas</a>
           </li>
           <li class="breadcrumb-item active" aria-current="page">
-            Edit Expense
+            Editar Conta
           </li>
         </ol>
       </nav>
@@ -17,7 +17,7 @@
 
     <div class="col-md-2">
       <a
-        href=""
+        href="{% url 'deletar-conta' contas.id %}"
         class="btn btn-danger btn-sm"
         >Delete</a
       >
@@ -49,9 +49,9 @@
         <div class="form-group">
           <label for="">Conta</label>
           <select class='form-control' name="tipoconta">
-            {% for TipoConta in TipoContas %}
-            <option name='tipoconta' value="{{TipoConta.tipoConta}}">{{TipoConta.tipoConta}}</option>
-            {% endfor %}
+            <option name='tipoconta' value="Corrente">Corrente</option>
+            <option name='tipoconta' value="Poupança">Poupança</option>
+            <option name='tipoconta' value="Carteira">Carteira</option>
           </select>
         </div>
         <div class="form-group">

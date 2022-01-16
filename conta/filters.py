@@ -1,13 +1,13 @@
 from django_filters import DateFilter
 import django_filters
 
-from .models import Expense, conta
+from .models import Despesa, Conta
 
-class ExpenseFilter(django_filters.FilterSet):
-    dataInicial = DateFilter(field_name='date', lookup_expr='gte')
-    dataFinal = DateFilter(field_name='date', lookup_expr='lte')
+class DespesaFilter(django_filters.FilterSet):
+    dataInicial = DateFilter(field_name='dataPagamento', lookup_expr='gte')
+    dataFinal = DateFilter(field_name='dataPagamento', lookup_expr='lte')
     class Meta:
-        model = Expense
+        model = Despesa
         fields = '__all__'
-        exclude = ['amount', 'owner', 'description', 'date']
+        exclude = ['valor', 'dono', 'descricao', 'dataPagamento']
 

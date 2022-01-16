@@ -37,9 +37,9 @@
       <div class="form-group">
         <label for="">Estilo Conta</label>
         <select class='form-control' name="tipoconta">
-          {% for TipoConta in TipoContas %}
-          <option name='tipoconta' value="{{TipoConta.tipoConta}}">{{TipoConta.tipoConta}}</option>
-          {% endfor %}
+          <option name='tipoconta' value="Corrente">Corrente</option>
+          <option name='tipoconta' value="Poupança">Poupança</option>
+          <option name='tipoconta' value="Carteira">Carteira</option>
         </select>
       </div>
       <input type="submit" value='Submit' class='btn btn-primary btn-primary-sm'>

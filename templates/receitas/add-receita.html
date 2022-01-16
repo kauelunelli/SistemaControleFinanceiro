@@ -8,17 +8,13 @@
 
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'despesas' %}">Despesas</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Nova Despesa</li>
+      <li class="breadcrumb-item"><a href="{% url 'receitas' %}">Receitas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Nova Receita</li>
     </ol>
   </nav>
-  
-  <div class="col-md-2">
-    <a href="{% url 'add-categoria'%}" class="btn btn-primary">Add Categoria</a>
-  </div>
   <div class="card">
     <div class="card-body">
-    <form action="{% url 'add-expenses' %}" method="post">
+    <form action="{% url 'add-receita' %}" method="post">
       {% include 'partials/_messages.html' %}
     {% csrf_token %}
       <div class="form-group">
@@ -31,10 +27,11 @@
       </div>
       <div class="form-group">
         <label for="">Categoria</label>
-        <select class='form-control' name="tipoDespesa">
-          {% for tipoDespesa in tipoDespesas %}
-          <option name='tipoDespesa' value="{{tipoDespesa.name}}">{{tipoDespesa.name}}</option>
-          {% endfor %}
+        <select class='form-control' name="tipoReceita">
+          <option name='tipoReceita' value="Salário">Salário</option>
+          <option name='tipoReceita' value="Prêmio">Prêmio</option>
+          <option name='tipoReceita' value="Presente">Presente</option>
+          <option name='tipoReceita' value="Outro">Outro</option>
         </select>
       </div>
       <div class="form-group">
@@ -46,12 +43,12 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="">Data de Pagamento</label>
-        <input type="date" name='dataPagamento' class="form-control form-control-sm">
+        <label for="">Data de Recebimento</label>
+        <input type="date" name='dataRecebimento' class="form-control form-control-sm">
       </div>
       <div class="form-group">
-        <label for="">Data do Pagamento Esperado</label>
-        <input type="date" name='dataPagamentoEsperado' class="form-control form-control-sm">
+        <label for="">Data do Recebimento Esperado</label>
+        <input type="date" name='dataRecebimentoEsperado' class="form-control form-control-sm">
       </div>
       <input type="submit" value='Submit' class='btn btn-primary btn-primary-sm'>
     </form>

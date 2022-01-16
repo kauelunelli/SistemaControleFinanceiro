@@ -1,7 +1,7 @@
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Category, Expense, conta, TipoConta, tipoReceita
+from .models import Receita, TipoDespesa, Despesa, Conta
 # Create your views here.
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -9,12 +9,14 @@ from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
 import datetime
-from .filters import ExpenseFilter
+from .filters import DespesaFilter
 
+
+# CONTA
 
 @login_required(login_url='/autenticacao/login')
 def contas(request):
-    contas = conta.objects.all()
+    contas = Conta.objects.all()
     paginator = Paginator(contas, 5)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number) 
@@ -25,12 +27,10 @@ def contas(request):
     return render(request, 'conta/contas.html', context)
 
 def add_conta(request):
-    contas = conta.objects.all()
-    TipoContas = TipoConta.objects.all()
+    contas = Conta.objects.all()
     context = {
         'values': request.POST,
         'contas': contas,
-        'TipoContas' : TipoContas,
     }
     if request.method == 'GET':
         return render(request, 'conta/add-conta.html', context)
@@ -55,18 +55,16 @@ def add_conta(request):
         
         if not instituicao:
             messages.error(request, 'Precisa de uma Instituição!')
-        conta.objects.create(dono=request.user,tipoConta=tipoConta, nome=nome, saldo=saldo, instituicao=instituicao)
+        Conta.objects.create(dono=request.user,tipoConta=tipoConta, nome=nome, saldo=saldo, instituicao=instituicao)
         messages.success(request, 'Conta feita com Sucesso!')
 
         return redirect('add-conta')
 
 def editar_conta(request, id):
-    contas = conta.objects.get(pk=id)
-    TipoContas = TipoConta.objects.all()
+    contas = Conta.objects.get(pk=id)
     context = {
         'contas': contas,
         'values': request.POST,
-        'TipoContas' : TipoContas,
     }
     if request.method == 'GET':
         return render(request, 'conta/editar-conta.html', context)
@@ -96,150 +94,238 @@ def editar_conta(request, id):
         return redirect('contas')
 
 
+def deletar_conta(request, id):
+    conta = Conta.objects.get(pk=id)
+    conta.delete()
+    messages.success(request, 'Conta Excluida')
+    return redirect('contas')
 
+
+
+# DESPESA
 
 
 @login_required(login_url='/autenticacao/login')
 def despesas(request):
-    categories = Category.objects.all()
-    expenses = Expense.objects.filter(owner=request.user)
-    paginator = Paginator(expenses, 5)
+    despesas = Despesa.objects.filter(dono=request.user)
+    paginator = Paginator(despesas, 5)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number) 
-    myFilter = ExpenseFilter(request.GET, queryset=expenses)
-    expenses = myFilter.qs
+    myFilter = DespesaFilter(request.GET, queryset=despesas)
+    despesas = myFilter.qs
     context = {
-        'expenses': expenses,
+        'despesas': despesas,
         'page_obj': page_obj,
         'myFilter': myFilter,
     }
     return render(request, 'expenses/despesas.html', context)
 
 
-def add_expense(request):
-    contas = conta.objects.all()
-    expense = Expense.objects.all()
-    categories = Category.objects.all()
+def add_despesa(request):
+    contas = Conta.objects.all()
+    despesa = Despesa.objects.all()
+    tipodespesa = TipoDespesa.objects.all()
     context = {
-        'categories': categories,
+        'tipoDespesas': tipodespesa,
         'values': request.POST,
-        'expense': expense,
+        'despesa': despesa,
         'contas' : contas,
     }
     if request.method == 'GET':
         return render(request, 'expenses/add_expense.html', context)
 
     if request.method == 'POST':
-        amount = request.POST['amount']
+        valor = request.POST['valor']
 
-        if not amount:
+        if not valor:
             messages.error(request, 'Amount is required')
             return render(request, 'expenses/add_expense.html', context)
-        description = request.POST['description']
-        date = request.POST['expense_date']
-        category = request.POST['category']
+        descricao = request.POST['descricao']
+        tipodespesa = request.POST['tipoDespesa']
         contas = request.POST['nome']
+        dataPagamento = request.POST['dataPagamento']
+        dataPagamentoEsperado = request.POST['dataPagamentoEsperado']
 
-        if not description:
+        if not descricao:
             messages.error(request, 'description is required')
             return render(request, 'expenses/add_expense.html', context)
+        
+        if not tipodespesa:
+            messages.error(request, 'Precisa de uma Categoria!')
+            return render(request, 'expenses/add_expense.html', context)
 
-        Expense.objects.create(owner=request.user, amount=amount, date=date,
-                               category=category, description=description, contas=contas)
+        Despesa.objects.create(dono=request.user, valor=valor, descricao=descricao, dataPagamento=dataPagamento, dataPagamentoEsperado=dataPagamentoEsperado,
+                               tipoDespesa=tipodespesa, conta=contas)
         messages.success(request, 'Expense saved successfully')
 
         return redirect('despesas')
 
-def add_categoria(request):
-    categoria = Category.objects.all()
+def add_tipodespesa(request):
+    tipoDespesa = TipoDespesa.objects.all()
     context = {
-        'categoria' : categoria,
+        'tipoDespesa' : tipoDespesa,
+        
     }
     if request.method == 'GET':
         return render(request, 'expenses/add-categoria.html', context)
 
     if request.method == 'POST':
-        categoria = request.POST['categoria']
+        tipoDespesa = request.POST['tipoDespesa']
 
-    if not categoria:
-        messages.error(request, "Precisa de uma Categoria")
+    if not tipoDespesa:
+        messages.error(request, "Precisa de uma Categoria de Despesa!")
         return render(request, 'expense/add-categoria.html', context)
 
-    Category.objects.create(name=categoria)
+    TipoDespesa.objects.create(name=tipoDespesa)
     messages.success(request, 'Categoria salva com sucesso!')
 
     return redirect('add-expenses')
 
 
-
-def expense_edit(request, id):
-    expense = Expense.objects.get(pk=id)
-    categories = Category.objects.all()
+def editar_despesa(request, id):
+    despesa = Despesa.objects.get(pk=id)
+    tipoDespesas = TipoDespesa.objects.all()
+    contas = Conta.objects.all()
     context = {
-        'expense': expense,
-        'values': expense,
-        'categories': categories
+        'despesa': despesa,
+        'values': despesa,
+        'tipoDespesas': tipoDespesas,
+        'contas' : contas
     }
     if request.method == 'GET':
         return render(request, 'expenses/edit-expense.html', context)
     if request.method == 'POST':
-        amount = request.POST['amount']
+        valor = request.POST['valor']
 
-        if not amount:
+        if not valor:
             messages.error(request, 'Amount is required')
             return render(request, 'expenses/edit-expense.html', context)
-        description = request.POST['description']
-        date = request.POST['expense_date']
-        category = request.POST['category']
 
-        if not description:
+        descricao = request.POST['descricao']
+        dataPagamento = request.POST['dataPagamento']
+        dataPagamentoEsperado = request.POST['dataPagamentoEsperado']
+        tipoDespesa = request.POST['tipoDespesa']
+        contas = request.POST['conta']
+
+
+        if not descricao:
             messages.error(request, 'description is required')
             return render(request, 'expenses/edit-expense.html', context)
 
-        expense.owner = request.user
-        expense.amount = amount
-        expense. date = date
-        expense.category = category
-        expense.description = description
+        despesa.dono = request.user
+        despesa.valor = valor
+        despesa.dataPagamento = dataPagamento
+        despesa.dataPagamentoEsperado = dataPagamentoEsperado
+        despesa.tipoDespesa = tipoDespesa
+        despesa.descricao = descricao
+        despesa.conta = contas
 
-        expense.save()
+        despesa.save()
         messages.success(request, 'Despesa enviada com Sucesso!')
 
         return redirect('despesas')
 
 
-def delete_expense(request, id):
-    expense = Expense.objects.get(pk=id)
-    expense.delete()
+def deletar_despesa(request, id):
+    despesa = Despesa.objects.get(pk=id)
+    despesa.delete()
     messages.success(request, 'Despesa Excluída')
     return redirect('despesas')
 
+# RECEITA
 
-def expense_category_summary(request):
-    todays_date = datetime.date.today()
-    six_months_ago = todays_date-datetime.timedelta(days=30*6)
-    expenses = Expense.objects.filter(owner=request.user,
-                                      date__gte=six_months_ago, date__lte=todays_date)
-    finalrep = {}
+def receitas(request):
+    receitas = Receita.objects.filter(dono=request.user)
+    paginator = Paginator(receitas, 5)
+    page_number = request.GET.get('page')
+    page_obj = Paginator.get_page(paginator, page_number) 
+    context = {
+        'receitas': receitas,
+        'page_obj': page_obj,
+    }
+    return render(request, 'receitas/receitas.html', context)
 
-    def get_category(expense):
-        return expense.category
-    category_list = list(set(map(get_category, expenses)))
+def add_receita(request):
+    contas = Conta.objects.all()
+    receita = Receita.objects.all()
+    context = {
+        'values': request.POST,
+        'receita': receita,
+        'contas' : contas,
+    }
+    if request.method == 'GET':
+        return render(request, 'receitas/add-receita.html', context)
 
-    def get_expense_category_amount(category):
-        amount = 0
-        filtered_by_category = expenses.filter(category=category)
+    if request.method == 'POST':
+        valor = request.POST['valor']
 
-        for item in filtered_by_category:
-            amount += item.amount
-        return amount
+        if not valor:
+            messages.error(request, 'Precisa de um Valor!')
+            return render(request, 'receitas/add-receita.html', context)
+        descricao = request.POST['descricao']
+        tiporeceita = request.POST['tipoReceita']
+        contas = request.POST['nome']
+        dataRecebimento = request.POST['dataRecebimento']
+        dataRecebimentoEsperado = request.POST['dataRecebimentoEsperado']
 
-    for x in expenses:
-        for y in category_list:
-            finalrep[y] = get_expense_category_amount(y)
+        if not descricao:
+            messages.error(request, 'description is required')
+            return render(request, 'receitas/add-receita.html', context)
+        
+        if not tiporeceita:
+            messages.error(request, 'Precisa de uma Categoria!')
+            return render(request, 'receitas/add-receita.html', context)
 
-    return JsonResponse({'expense_category_data': finalrep}, safe=False)
+        Receita.objects.create(dono=request.user, valor=valor, descricao=descricao, dataRecebimento=dataRecebimento, dataRecebimentoEsperado=dataRecebimentoEsperado,
+                               tipoReceita=tiporeceita, conta=contas)
+        messages.success(request, 'Receita salva com sucesso!')
+
+        return redirect('receitas')
+
+def editar_receita(request, id):
+    receita = Receita.objects.get(pk=id)
+    contas = Conta.objects.all()
+    context = {
+        'receita': receita,
+        'values': receita,
+        'contas': contas,
+    }
+    if request.method == 'GET':
+        return render(request, 'receitas/editar-receita.html', context)
+    if request.method == 'POST':
+        valor = request.POST['valor']
+
+        if not valor:
+            messages.error(request, 'Amount is required')
+            return render(request, 'receitas/editar-receita.html', context)
+
+        descricao = request.POST['descricao']
+        dataRecebimento = request.POST['dataRecebimento']
+        dataRecebimentoEsperado = request.POST['dataRecebimentoEsperado']
+        tipoReceita = request.POST['tipoDespesa']
+        contas = request.POST['conta']
 
 
-def stats_view(request):
-    return render(request, 'expenses/stats.html')
+        if not descricao:
+            messages.error(request, 'description is required')
+            return render(request, 'receitas/editar-receita.html', context)
+
+        receita.dono = request.user
+        receita.valor = valor
+        receita.dataRecebimento = dataRecebimento
+        receita.dataRecebimentoEsperado = dataRecebimentoEsperado
+        receita.tipoReceita = tipoReceita
+        receita.descricao = descricao
+        receita.conta = contas
+
+        receita.save()
+        messages.success(request, 'Despesa enviada com Sucesso!')
+
+        return redirect('receitas')
+
+def deletar_receita(request, id):
+    receita = Receita.objects.get(pk=id)
+    receita.delete()
+    messages.success(request, 'Receita Excluída')
+    return redirect('receitas')
+

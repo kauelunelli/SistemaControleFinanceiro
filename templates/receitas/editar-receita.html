@@ -6,10 +6,10 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="{% url 'despesas'%}">Despesas</a>
+            <a href="{% url 'receitas' %}">Receitas</a>
           </li>
           <li class="breadcrumb-item active" aria-current="page">
-            Editar Despesa
+            Editar Receita
           </li>
         </ol>
       </nav>
@@ -17,7 +17,7 @@
 
     <div class="col-md-2">
       <a
-        href="{% url 'expense-delete' despesa.id %}"
+        href="{% url 'deletar-receita' receita.id %}"
         class="btn btn-danger btn-sm"
         >Delete</a
       >
@@ -26,7 +26,7 @@
 
   <div class="card">
     <div class="card-body">
-      <form action="{% url 'expense-edit' despesa.id %}" method="post">
+      <form action="{% url 'edita-receita' receita.id %}" method="post">
         {% include 'partials/_messages.html'%} {% csrf_token %}
         <div class="form-group">
           <label for="">Valor</label>
@@ -49,15 +49,11 @@
         <div class="form-group">
           <label for="">Categoria</label>
           <select class="form-control" name="tipoDespesa">
-            <option selected name="category" value="{{values.tipoDespesa}}"
-              >{{values.tipoDespesa}}</option
-            >
-            {% for tipoDespesa in tipoDespesas %}
-            <option name="tipoDespesa" value="{{tipoDespesa.name}}"
-              >{{tipoDespesa.name}}</option
-            >
-
-            {% endfor %}
+            <option name='tipoReceita' value="Salário">Salário</option>
+            <option name='tipoReceita' value="Prêmio">Prêmio</option>
+            <option name='tipoReceita' value="Presente">Presente</option>
+            <option name='tipoReceita' value="Outro">Outro</option>
+            </select>
           </div>
           </select>
           <div class="form-group">
@@ -67,9 +63,7 @@
                 >{{values.conta}}</option
               >
               {% for conta in contas %}
-              <option name="conta" value="{{conta.nome}}"
-                >{{conta.nome}}</option
-              >
+              <option name='nome' value="{{conta.nome}}">{{conta.nome}}</option>
   
               {% endfor %}
             </select>
@@ -79,18 +73,18 @@
           <label for="">Data de Pagamento</label>
           <input
             type="date"
-            value="{{values.dataPagamento |date:'Y-m-d' }}"
+            value="{{values.dataRecebimento |date:'Y-m-d' }}"
             class="form-control form-control-sm"
-            name="dataPagamento"
+            name="dataRecebimento"
           />
         </div>
         <div class="form-group">
           <label for="">Date de Pagamento Esperado</label>
           <input
             type="date"
-            value="{{values.dataPagamentoEsperado |date:'Y-m-d' }}"
+            value="{{values.dataRecebimentoEsperado |date:'Y-m-d' }}"
             class="form-control form-control-sm"
-            name="dataPagamentoEsperado"
+            name="dataRecebimentoEsperado"
           />
         </div>
 
