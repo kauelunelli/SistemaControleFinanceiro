@@ -26,6 +26,9 @@ def contas(request):
     }
     return render(request, 'conta/contas.html', context)
 
+
+
+@login_required(login_url='/autenticacao/login')
 def add_conta(request):
     contas = Conta.objects.all()
     context = {
@@ -60,6 +63,8 @@ def add_conta(request):
 
         return redirect('add-conta')
 
+
+@login_required(login_url='/autenticacao/login')
 def editar_conta(request, id):
     contas = Conta.objects.get(pk=id)
     context = {
@@ -118,9 +123,10 @@ def despesas(request):
         'page_obj': page_obj,
         'myFilter': myFilter,
     }
-    return render(request, 'expenses/despesas.html', context)
+    return render(request, 'despesas/despesas.html', context)
 
 
+@login_required(login_url='/autenticacao/login')
 def add_despesa(request):
     contas = Conta.objects.all()
     despesa = Despesa.objects.all()
@@ -132,14 +138,14 @@ def add_despesa(request):
         'contas' : contas,
     }
     if request.method == 'GET':
-        return render(request, 'expenses/add_expense.html', context)
+        return render(request, 'despesas/add-despesa.html', context)
 
     if request.method == 'POST':
         valor = request.POST['valor']
 
         if not valor:
-            messages.error(request, 'Amount is required')
-            return render(request, 'expenses/add_expense.html', context)
+            messages.error(request, 'Valor é necessário!')
+            return render(request, 'despesas/add-despesa', context)
         descricao = request.POST['descricao']
         tipodespesa = request.POST['tipoDespesa']
         contas = request.POST['nome']
@@ -147,12 +153,12 @@ def add_despesa(request):
         dataPagamentoEsperado = request.POST['dataPagamentoEsperado']
 
         if not descricao:
-            messages.error(request, 'description is required')
-            return render(request, 'expenses/add_expense.html', context)
+            messages.error(request, 'Descrição é necessario')
+            return render(request, 'despesas/add-despesa', context)
         
         if not tipodespesa:
             messages.error(request, 'Precisa de uma Categoria!')
-            return render(request, 'expenses/add_expense.html', context)
+            return render(request, 'despesas/add-despesa', context)
 
         Despesa.objects.create(dono=request.user, valor=valor, descricao=descricao, dataPagamento=dataPagamento, dataPagamentoEsperado=dataPagamentoEsperado,
                                tipoDespesa=tipodespesa, conta=contas)
@@ -160,28 +166,8 @@ def add_despesa(request):
 
         return redirect('despesas')
 
-def add_tipodespesa(request):
-    tipoDespesa = TipoDespesa.objects.all()
-    context = {
-        'tipoDespesa' : tipoDespesa,
-        
-    }
-    if request.method == 'GET':
-        return render(request, 'expenses/add-categoria.html', context)
 
-    if request.method == 'POST':
-        tipoDespesa = request.POST['tipoDespesa']
-
-    if not tipoDespesa:
-        messages.error(request, "Precisa de uma Categoria de Despesa!")
-        return render(request, 'expense/add-categoria.html', context)
-
-    TipoDespesa.objects.create(name=tipoDespesa)
-    messages.success(request, 'Categoria salva com sucesso!')
-
-    return redirect('add-expenses')
-
-
+@login_required(login_url='/autenticacao/login')
 def editar_despesa(request, id):
     despesa = Despesa.objects.get(pk=id)
     tipoDespesas = TipoDespesa.objects.all()
@@ -193,13 +179,13 @@ def editar_despesa(request, id):
         'contas' : contas
     }
     if request.method == 'GET':
-        return render(request, 'expenses/edit-expense.html', context)
+        return render(request, 'despesas/edita-despesa.html', context)
     if request.method == 'POST':
         valor = request.POST['valor']
 
         if not valor:
             messages.error(request, 'Amount is required')
-            return render(request, 'expenses/edit-expense.html', context)
+            return render(request, 'despesas/edita-despesa.html', context)
 
         descricao = request.POST['descricao']
         dataPagamento = request.POST['dataPagamento']
@@ -210,7 +196,7 @@ def editar_despesa(request, id):
 
         if not descricao:
             messages.error(request, 'description is required')
-            return render(request, 'expenses/edit-expense.html', context)
+            return render(request, 'despesas/edita-despesa.html', context)
 
         despesa.dono = request.user
         despesa.valor = valor
@@ -234,6 +220,7 @@ def deletar_despesa(request, id):
 
 # RECEITA
 
+@login_required(login_url='/autenticacao/login')
 def receitas(request):
     receitas = Receita.objects.filter(dono=request.user)
     paginator = Paginator(receitas, 5)
@@ -245,6 +232,7 @@ def receitas(request):
     }
     return render(request, 'receitas/receitas.html', context)
 
+@login_required(login_url='/autenticacao/login')
 def add_receita(request):
     contas = Conta.objects.all()
     receita = Receita.objects.all()
@@ -282,6 +270,7 @@ def add_receita(request):
 
         return redirect('receitas')
 
+@login_required(login_url='/autenticacao/login')
 def editar_receita(request, id):
     receita = Receita.objects.get(pk=id)
     contas = Conta.objects.all()
