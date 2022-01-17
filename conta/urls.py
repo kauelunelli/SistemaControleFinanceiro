@@ -13,10 +13,9 @@ urlpatterns = [
 
     #DESPESAS
     path('', views.despesas, name="despesas"),
-    path('add-expense', views.add_despesa, name="add-expenses"),
-    path('add-categoria', views.add_tipodespesa, name='add-categoria'),
-    path('edit-expense/<int:id>', views.editar_despesa, name="expense-edit"),
-    path('expense-delete/<int:id>', views.deletar_despesa, name="expense-delete"),
+    path('add-despesa', views.add_despesa, name="add-despesa"),
+    path('edita-despesa/<int:id>', views.editar_despesa, name="edita-despesa"),
+    path('deletar-despesa/<int:id>', views.deletar_despesa, name="deletar-despesa"),
 
     #RECEITAS
     path('receitas', views.receitas, name="receitas"),
