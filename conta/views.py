@@ -162,7 +162,7 @@ def add_despesa(request):
 
         Despesa.objects.create(dono=request.user, valor=valor, descricao=descricao, dataPagamento=dataPagamento, dataPagamentoEsperado=dataPagamentoEsperado,
                                tipoDespesa=tipodespesa, conta=contas)
-        messages.success(request, 'Expense saved successfully')
+        messages.success(request, 'Despesa salva com sucesso')
 
         return redirect('despesas')
 
@@ -195,7 +195,7 @@ def editar_despesa(request, id):
 
 
         if not descricao:
-            messages.error(request, 'description is required')
+            messages.error(request, 'Precisa de uma descrição')
             return render(request, 'despesas/edita-despesa.html', context)
 
         despesa.dono = request.user
@@ -285,7 +285,7 @@ def editar_receita(request, id):
         valor = request.POST['valor']
 
         if not valor:
-            messages.error(request, 'Amount is required')
+            messages.error(request, 'Valor é necessario')
             return render(request, 'receitas/editar-receita.html', context)
 
         descricao = request.POST['descricao']
@@ -296,7 +296,7 @@ def editar_receita(request, id):
 
 
         if not descricao:
-            messages.error(request, 'description is required')
+            messages.error(request, 'Precisa de uma descrição')
             return render(request, 'receitas/editar-receita.html', context)
 
         receita.dono = request.user
