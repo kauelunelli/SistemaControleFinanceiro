@@ -23,3 +23,9 @@ Siga os seguintes passos para instalar o projeto em sua máquina local.
 ## Como Rodar
 
 Após as migrações terem sido feitas você pode rodar a plataforma. Para rodar o servidor use ``python manage.py runserver``.
+
+
+## Fazer Login
+
+Crie uma conta no ``Cadastro´´.
+Use uma senha como : admin@123
